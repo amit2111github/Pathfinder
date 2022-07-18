@@ -11,10 +11,8 @@ function App() {
   const [foundPath , setFoundPath] = useState(new Set());
   const [takeObstacle ,  setTakeObstacle] = useState(false);
   const [obstacle , setObstacle] = useState([]);
-  // console.log("A PATH SET " , foundPath);
-  const dijkstra = () => {
+  const ssp = () => {
     setTakeObstacle(false);
-    // 1 is start 2 is end 0 is free -1 is obstacle;
     if(!cords) return;
     const colx = [1 ,-1 ,0,0] , coly = [0,0,1,-1];
     for(let i = 0;i < N;i++) {
@@ -27,10 +25,6 @@ function App() {
     for(let a of obstacle) {
       grid[a[0]-1][a[1]-1] = -1;
     }  
-    // for(let a of grid) {
-    //   console.log(a , " grid");
-    // }
-
     let que = [[cords.sx-1 , cords.sy-1]];
     const s = new Set();
     let parent = new Map();
@@ -39,8 +33,6 @@ function App() {
     let found = false;
     outer : while(que.length > 0) {
       let size = que.length;
-      // for(let z of que) console.log(z);
-      // console.log("end");
       while(size-- > 0) {
         let [x , y] = que.shift();
         if(Number(grid[x][y]) === 2) {
@@ -68,8 +60,6 @@ function App() {
       // console.log(cx , cy);
     }
     path.reverse();
-    // console.log(parent);
-    // for(let z of path) console.log(z , "Path");
     if(!found) {
       alert("No Path is Available");
       return;
@@ -123,18 +113,19 @@ function App() {
     else setCords({...cords , ex: Number(e.target.attributes.r.value) , ey :Number(e.target.attributes.c.value)});
   }
   return (
-    <div className="App">
-      <h1>Path Finder</h1>
+    <div>
       <div>
         <input type = "number" placeholder = "Enter Row" min = {1} max = {20} onChange = {e => setN(e.target.value)}/>
         <input type = "number" placeholder = "Enter Column" min = {1} max = {20} onChange = {e => setM(e.target.value)}/>
         <button onClick = {e => makeGrid()}>Make Grid</button>
       </div>
       {(N && M&& N > 0 && M > 0 &&start)?<Grid N = {N} M = {M} setEndPoints= {setEndPoints} cords = {cords} foundPath = {foundPath} obstacle = {obstacle}/>:<p></p>}
-      <button onClick = {dijkstra}>Find Path</button>
+      {start && foundPath.size > 0 && <h3>Length of Path is  {foundPath.size}</h3>}
+      {start && <button onClick = {ssp} style = {{marginTop : "20px"}}>Find Path</button>}
+      {start && <p>Note : Cost of all the cell is same , and grid[r][c] = 'X' means that u cannot pass through (r,c) cell.</p>}
+
     </div>
 
   );
 }
-
 export default App;

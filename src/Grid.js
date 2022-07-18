@@ -2,18 +2,29 @@ import React from "react";
 const Row = ({M , N , setEndPoints,cords , foundPath , obstacle}) => {
 	const elem = [];
 	for(let i = 1;i <= M;i++) {
+		let textContent = "";
 		let cellInPath = foundPath.has(N + " " + i);
 		let obstacleInPath = false;
 		obstacle.forEach(ob => {
-			if(ob[0] == N && ob[1] == i) obstacleInPath = true;
+			if(ob[0] == N && ob[1] == i) {
+				obstacleInPath = true;
+				textContent = 'X';
+			} 
 		});
-		let className = (N === cords.sx && i === cords.sy)?"start":"";
-		className = (N === cords.ex && i === cords.ey)?"end":className;
-		className  += (cellInPath?" path":"");
-		className += (obstacleInPath?" obstacle":"");
+		let className;
+		if(N === cords.sx && i === cords.sy) {
+			className = "start";
+			textContent  = "S";
+		}
+		if(N === cords.ex && i === cords.ey) {
+			className = "end";
+			textContent = "E";
+		}
+		if(cellInPath) className = "path";
+		if(obstacleInPath) className = "obstacle";
 		elem.push(
 			<div id = "cell" key = {i} r = {N} c = {i} className = {className} onClick  = {setEndPoints}>
-				{obstacleInPath?"X":className.substr(0,1)}
+				{textContent}
 			</div>
 		);
 	}
